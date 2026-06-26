@@ -16,7 +16,7 @@ db.add(Component(
     0.022
 ))
 
-part = db.find("IRL3103PBF")
+part = db.find("44")
 
 print(part.mpn)
 print(part.rds_on)

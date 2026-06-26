@@ -46,8 +46,8 @@ class Database:
         c.execute("""
         SELECT *
         FROM components
-        WHERE mpn=?
-        """, (mpn,))
+        WHERE mpn like ?
+        """, ('%'+mpn+'%',))
 
         row = c.fetchone()
 
