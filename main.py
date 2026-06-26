@@ -7,6 +7,7 @@ import io
 
 import ui
 import photos
+from PIL import ImageOps
 
 class MainView(ui.View):
 
@@ -48,23 +49,28 @@ class MainView(ui.View):
         self.subviews[2].frame = (40, self.height/2-30, self.width-80, 60)
 
     def take_photo(self, sender):
-        image = photos.capture_image()
+        pil = photos.capture_image()
 
-        if image:
-            img_view = ui.ImageView()
-            img_view.frame = self.bounds
-            img_view.flex = "WH"
-            img_view.content_mode = ui.CONTENT_SCALE_ASPECT_FIT
-            buf = io.BytesIO()
-            image.save(buf, format='PNG')
-            img_view.image = ui.Image.from_data(buf.getvalue())
+        if pil:
+            # EXIF-Rotation übernehmen
+            pil = ImageOps.exif_transpose(pil)
 
-            preview = ui.View()
-            preview.name = "Vorschau"
-            preview.background_color = "black"
-            preview.add_subview(img_view)
+            b = io.BytesIO()
+            pil.save(b, 'JPEG')
+            b.seek(0)
 
-            preview.present("fullscreen")
+            img = ui.Image.from_data(b.read())
+
+            iv = ui.ImageView()
+            iv.image = img
+            iv.content_mode = ui.CONTENT_SCALE_ASPECT_FIT
+            iv.flex = 'WH'
+
+            v = ui.View(bg_color='black')
+            iv.frame = v.bounds
+            v.add_subview(iv)
+
+            v.present('fullscreen')
 
 
 MainView().present("fullscreen")
