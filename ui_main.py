@@ -114,15 +114,7 @@ class MainView(ui.View):
             return
 
         self.result.text = f"""
-    MPN
-
-    {part.mpn}
-
-    VDS
-
-    {part.vds} V
-
-    RDS(on)
-
-    {part.rdson} Ω
-    """
+            MPN {part.mpn}
+            VDS {part.vds} V
+            RDS(on) {part.rdson} Ω
+            """
