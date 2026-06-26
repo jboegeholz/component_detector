@@ -32,7 +32,7 @@ class Database:
 
             comp.mpn,
             comp.vds,
-            comp.rds_on,
+            comp.rdson,
 
         ))
 
@@ -58,6 +58,4 @@ class Database:
             row["mpn"],
             row["vds"],
             row["rdson"]
-
-
         )

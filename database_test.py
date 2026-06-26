@@ -19,4 +19,4 @@ db.add(Component(
 part = db.find("44")
 
 print(part.mpn)
-print(part.rds_on)
+print(part.rdson)
