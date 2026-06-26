@@ -1,6 +1,7 @@
 import ui
 from database import Database
 
+
 class MainView(ui.View):
 
     def __init__(self):
@@ -10,7 +11,6 @@ class MainView(ui.View):
         self.build()
 
     def build(self):
-
         # Titel
         title = ui.Label()
         title.text = 'Bauteil Scanner'
@@ -40,52 +40,30 @@ class MainView(ui.View):
         self.preview.background_color = '#222222'
         self.preview.corner_radius = 12
         self.preview.content_mode = ui.CONTENT_SCALE_ASPECT_FIT
-        self.preview.frame = (20,120,self.width-40,250)
-        self.preview.flex='W'
+        self.preview.frame = (20, 120, self.width - 40, 250)
+        self.preview.flex = 'W'
 
         self.add_subview(self.preview)
 
-        self.search = ui.TextField()
-
+        self.search = ui.TextField(frame=(20, 120, self.width - 40, 40))
         self.search.placeholder = "MPN eingeben"
-
-        self.search.frame = (20, 120, self.width - 40, 40)
-
-        self.search.border_style = ui.TEXT_FIELD_ROUNDED
-
-        self.search.autocapitalization_type = ui.AUTOCAPITALIZE_ALL
-
-        self.search.autocorrection_type = False
-
         self.add_subview(self.search)
+
         btn = ui.Button()
-
         btn.title = "🔍 Suchen"
-
         btn.frame = (20, 175, self.width - 40, 45)
-
         btn.background_color = "#007AFF"
-
         btn.tint_color = "white"
-
         btn.corner_radius = 10
-
         btn.action = self.search_part
-
         self.add_subview(btn)
 
         self.result = ui.TextView()
-
         self.result.editable = False
-
         self.result.background_color = "#222222"
-
         self.result.text_color = "white"
-
         self.result.font = ("Menlo", 18)
-
         self.result.frame = (20, 240, self.width - 40, 220)
-
         self.add_subview(self.result)
 
         # Button Kamera
@@ -93,19 +71,18 @@ class MainView(ui.View):
         b = ui.Button()
 
         b.title = "📷 Foto aufnehmen"
-        b.frame = (20,400,self.width-40,55)
+        b.frame = (20, 400, self.width - 40, 55)
         b.corner_radius = 12
         b.background_color = "#007AFF"
         b.tint_color = "white"
-        b.font = ("<System-Bold>",20)
-        b.flex='W'
+        b.font = ("<System-Bold>", 20)
+        b.flex = 'W'
 
-        b.action=self.take_photo
+        b.action = self.take_photo
 
         self.add_subview(b)
 
     def layout(self):
-
         self.preview.frame = (
             20,
             120,
@@ -120,8 +97,7 @@ class MainView(ui.View):
             35
         )
 
-    def take_photo(self,sender):
-
+    def take_photo(self, sender):
         print("Kamera kommt als Nächstes 😊")
 
     def close_view(self, sender):
