@@ -21,7 +21,19 @@ class MainView(ui.View):
         title.flex = 'W'
 
         self.add_subview(title)
+        # Schließen-Button
 
+        close_btn = ui.Button()
+        close_btn.title = "✕"
+        close_btn.frame = (self.width - 60, 50, 40, 40)
+        close_btn.flex = 'L'
+        close_btn.font = ('<System-Bold>', 22)
+        close_btn.tint_color = 'white'
+        close_btn.action = self.close_view
+
+        self.add_subview(close_btn)
+
+        self.close_btn = close_btn
         # Bildvorschau
 
         self.preview = ui.ImageView()
@@ -51,8 +63,23 @@ class MainView(ui.View):
 
     def layout(self):
 
-        self.preview.frame=(20,120,self.width-40,self.height*0.45)
+        self.preview.frame = (
+            20,
+            120,
+            self.width - 40,
+            self.height * 0.45
+        )
+
+        self.close_btn.frame = (
+            self.width - 55,
+            50,
+            35,
+            35
+        )
 
     def take_photo(self,sender):
 
         print("Kamera kommt als Nächstes 😊")
+
+    def close_view(self, sender):
+        self.close()
