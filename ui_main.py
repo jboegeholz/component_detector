@@ -1,12 +1,12 @@
 import ui
-
+from database import Database
 
 class MainView(ui.View):
 
     def __init__(self):
         self.name = 'Bauteil Scanner'
         self.background_color = '#111111'
-
+        self.db = Database()
         self.build()
 
     def build(self):
@@ -44,6 +44,49 @@ class MainView(ui.View):
         self.preview.flex='W'
 
         self.add_subview(self.preview)
+
+        self.search = ui.TextField()
+
+        self.search.placeholder = "MPN eingeben"
+
+        self.search.frame = (20, 120, self.width - 40, 40)
+
+        self.search.border_style = ui.TEXT_FIELD_ROUNDED
+
+        self.search.autocapitalization_type = ui.AUTOCAPITALIZE_ALL
+
+        self.search.autocorrection_type = False
+
+        self.add_subview(self.search)
+        btn = ui.Button()
+
+        btn.title = "🔍 Suchen"
+
+        btn.frame = (20, 175, self.width - 40, 45)
+
+        btn.background_color = "#007AFF"
+
+        btn.tint_color = "white"
+
+        btn.corner_radius = 10
+
+        btn.action = self.search_part
+
+        self.add_subview(btn)
+
+        self.result = ui.TextView()
+
+        self.result.editable = False
+
+        self.result.background_color = "#222222"
+
+        self.result.text_color = "white"
+
+        self.result.font = ("Menlo", 18)
+
+        self.result.frame = (20, 240, self.width - 40, 220)
+
+        self.add_subview(self.result)
 
         # Button Kamera
 
@@ -83,3 +126,27 @@ class MainView(ui.View):
 
     def close_view(self, sender):
         self.close()
+
+    def search_part(self, sender):
+        mpn = self.search.text.strip()
+
+        part = self.db.find(mpn)
+
+        if part is None:
+            self.result.text = "Nicht gefunden."
+
+            return
+
+        self.result.text = f"""
+    MPN
+
+    {part.mpn}
+
+    VDS
+
+    {part.vds} V
+
+    RDS(on)
+
+    {part.rdson} Ω
+    """

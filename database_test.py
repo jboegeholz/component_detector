@@ -7,7 +7,13 @@ db.create()
 db.add(Component(
     "IRL3103PBF",
     30,
-    True
+    0.0035
+))
+
+db.add(Component(
+    "IRLZ44N",
+    55,
+    0.022
 ))
 
 part = db.find("IRL3103PBF")
