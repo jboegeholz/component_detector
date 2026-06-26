@@ -1,4 +1,5 @@
 # This is a sample Python script.
+import io
 
 # Press Shift+F10 to execute it or replace it with your code.
 # Press Double Shift to search everywhere for classes, files, tool windows, actions, and settings.
@@ -31,7 +32,7 @@ class MainView(ui.View):
         self.add_subview(info)
 
         btn = ui.Button()
-        btn.title = "📷  Foto aufnehmen"
+        btn.title = "Foto aufnehmen"
         btn.font = ("<System-Bold>", 22)
         btn.tint_color = "white"
         btn.background_color = "#007AFF"
@@ -54,7 +55,9 @@ class MainView(ui.View):
             img_view.frame = self.bounds
             img_view.flex = "WH"
             img_view.content_mode = ui.CONTENT_SCALE_ASPECT_FIT
-            img_view.image = image
+            buf = io.BytesIO()
+            image.save(buf, format='PNG')
+            img_view.image = ui.Image.from_data(buf.getvalue())
 
             preview = ui.View()
             preview.name = "Vorschau"
