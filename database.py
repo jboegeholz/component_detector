@@ -39,7 +39,9 @@ class Database:
         self.db.commit()
 
     def find(self, mpn):
-        c = self.db.cursor()
+        db = sqlite3.connect("data/bauteile.db")
+        db.row_factory = sqlite3.Row
+        c = db.cursor()
 
         c.execute("""
         SELECT *
