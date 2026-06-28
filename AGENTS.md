@@ -7,6 +7,8 @@ einer MPN in einer lokalen SQLite-Datenbank.
 
 - Einstiegspunkt: `main.py`
 - UI: `ui_main.py`
+- Kamera: `camera.py`
+- OCR: `ocr.py`
 - Datenbankzugriff: `database.py`
 - Datenmodell: `component.py`
 - Octopart/Nexar-API-Client: `nexar_api.py`
@@ -32,7 +34,7 @@ vollstaendig ausfuehren, solange keine passende Kompatibilitaetsschicht vorhande
 Syntaxpruefung fuer alle Python-Dateien:
 
 ```bash
-python3 -m py_compile main.py ui_main.py database.py component.py camera.py database_init.py database_test.py nexar_api.py octopart_search.py
+python3 -m py_compile main.py ui_main.py database.py component.py camera.py ocr.py database_init.py database_test.py nexar_api.py octopart_search.py
 ```
 
 Datenbank initialisieren und Beispieldaten schreiben:
@@ -73,13 +75,15 @@ Hinweis: Das funktioniert nur in einer Umgebung, die das Pythonista-Modul `ui` b
 - `Database.add()` schreibt oder ersetzt Komponenten anhand des Primaerschluessels `mpn`.
 - `Database.find()` sucht per `LIKE` nach Teilstrings der MPN und gibt die erste gefundene Komponente zurueck.
 - `Component` ist ein einfaches Datenobjekt ohne Validierung.
+- `Camera.capture()` nutzt Pythonistas `photos.capture_image()`.
+- `recognize_text()` nutzt iOS Vision ueber Pythonistas `objc_util`.
+- `find_mpn()` extrahiert aus OCR-Text den laengsten plausiblen MPN-Kandidaten mit Ziffern.
 - `NexarApi.search_mpn()` ruft `supSearchMpn` ueber `https://api.nexar.com/graphql` auf.
 - `NexarApi` holt OAuth2-Tokens ueber `https://identity.nexar.com/connect/token` und cached sie bis kurz vor Ablauf.
 
 ## Bekannte Einschraenkungen
 
-- `camera.py` referenziert `Camera` und `scan`, definiert oder importiert sie aber nicht. Diese Datei ist aktuell kein
-  lauffaehiges Modul.
+- OCR und Kamera funktionieren nur in Pythonista auf iOS mit `photos`, `ui` und `objc_util`.
 - `ui_main.py` setzt voraus, dass `ui` verfuegbar ist. Beim Arbeiten ausserhalb von Pythonista nur Syntax pruefen, nicht
   importbasiert testen.
 - Die SQLite-Datei ist eine produktive Projektdatenquelle. Keine destruktiven Migrationen oder Testlaeufe ausfuehren,
@@ -103,7 +107,7 @@ Hinweis: Das funktioniert nur in einer Umgebung, die das Pythonista-Modul `ui` b
 Mindestens ausfuehren:
 
 ```bash
-python3 -m py_compile main.py ui_main.py database.py component.py camera.py database_init.py database_test.py nexar_api.py octopart_search.py
+python3 -m py_compile main.py ui_main.py database.py component.py camera.py ocr.py database_init.py database_test.py nexar_api.py octopart_search.py
 ```
 
 Wenn Datenbankverhalten betroffen ist, zusaetzlich einen gezielten Smoke-Test ausfuehren und klar dokumentieren, ob

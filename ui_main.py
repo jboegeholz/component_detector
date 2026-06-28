@@ -1,6 +1,8 @@
 import ui
+from camera import Camera, image_for_preview
 from component import Component
 from database import Database
+from ocr import OcrError, find_mpn, recognize_text
 
 
 class MainView(ui.View):
@@ -116,7 +118,28 @@ class MainView(ui.View):
         self.photo_btn.frame = (20, 490, self.width - 40, 55)
 
     def take_photo(self, sender):
-        print("Kamera kommt als Nächstes 😊")
+        image = Camera().capture()
+
+        if image is None:
+            return
+
+        self.preview.image = image_for_preview(image)
+        self.result.text = "OCR laeuft..."
+
+        try:
+            text = recognize_text(image)
+        except OcrError as error:
+            self.result.text = "OCR Fehler:\n" + str(error)
+            return
+
+        mpn = find_mpn(text)
+
+        if not mpn:
+            self.result.text = "Keine MPN erkannt.\n\n" + text
+            return
+
+        self.search.text = mpn
+        self.search_part(sender)
 
     def close_view(self, sender):
         self.close()
