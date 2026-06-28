@@ -23,6 +23,14 @@ def main():
         continous_drain_current=49
     ))
     db.add(Component(
+        "IRLZ44Z",
+        manufacturer="International Rectifier",
+        channel_type="n-channel",
+        vds=55,
+        rdson=0.0135,
+        continous_drain_current=51
+    ))
+    db.add(Component(
         "IRF830",
         manufacturer="International Rectifier",
         channel_type="n-channel",
