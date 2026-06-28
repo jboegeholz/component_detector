@@ -20,8 +20,10 @@ class Database:
         c.execute("""
         CREATE TABLE IF NOT EXISTS components(
         mpn TEXT PRIMARY KEY,
+        manufacturer TEXT,
         vds REAL,
-        rdson REAL
+        rdson REAL,
+        continous_drain_current INTEGER
         );
         """)
 
@@ -34,12 +36,14 @@ class Database:
 
         c.execute("""
         INSERT OR REPLACE INTO components
-        VALUES(?,?,?)
+        VALUES(?,?,?,?,?)
         """, (
 
             comp.mpn,
+            comp.manufacturer,
             comp.vds,
             comp.rdson,
+            comp.continous_drain_current
 
         ))
 

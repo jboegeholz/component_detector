@@ -7,22 +7,26 @@ def main():
     db.create()
 
     db.add(Component(
-        "IRL3103PBF",
-        30,
-        0.0035
-    ))
-
-    db.add(Component(
-        "IRLZ44N",
-        55,
-        0.022
+        "IRFZ44V",
+        manufacturer="International Rectifier",
+        vds=60,
+        rdson=0.0165,
+        continous_drain_current=55
     ))
     db.add(Component(
-        "IRFZ44",
-        60,
-        0.028
+        "IRFZ44N",
+        manufacturer="International Rectifier",
+        vds=55,
+        rdson=0.0175,
+        continous_drain_current=49
     ))
-
+    db.add(Component(
+        "IRF830",
+        manufacturer="International Rectifier",
+        vds=500,
+        rdson=1.5,
+        continous_drain_current=4.5
+    ))
 
     print("Datenbank initialisiert.")
 
