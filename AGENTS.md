@@ -9,6 +9,8 @@ einer MPN in einer lokalen SQLite-Datenbank.
 - UI: `ui_main.py`
 - Datenbankzugriff: `database.py`
 - Datenmodell: `component.py`
+- Octopart/Nexar-API-Client: `nexar_api.py`
+- Octopart/Nexar-Suchskript: `octopart_search.py`
 - Lokale Datenbank: `data/bauteile.sqlite`
 - Datenbankinitialisierung: `database_init.py`
 - Manuelles Smoke-Test-Skript: `database_test.py`
@@ -20,6 +22,7 @@ vollstaendig ausfuehren, solange keine passende Kompatibilitaetsschicht vorhande
 
 - Sprache: Python
 - Persistenz: SQLite ueber die Standardbibliothek `sqlite3`
+- Externe Bauteildaten: Octopart-Daten ueber die Nexar GraphQL API
 - Externe Projektkonfigurationen wie `pyproject.toml`, `requirements.txt` oder ein Testframework sind aktuell nicht
   vorhanden.
 - `.idea/` ist im Repository vorhanden, aber `.gitignore` schliesst `.idea` fuer neue Aenderungen aus.
@@ -29,7 +32,7 @@ vollstaendig ausfuehren, solange keine passende Kompatibilitaetsschicht vorhande
 Syntaxpruefung fuer alle Python-Dateien:
 
 ```bash
-python3 -m py_compile main.py ui_main.py database.py component.py camera.py database_init.py database_test.py
+python3 -m py_compile main.py ui_main.py database.py component.py camera.py database_init.py database_test.py nexar_api.py octopart_search.py
 ```
 
 Datenbank initialisieren und Beispieldaten schreiben:
@@ -45,6 +48,14 @@ python3 database_test.py
 ```
 
 Hinweis: `database_test.py` erwartet vorhandene Daten in `data/bauteile.sqlite` und ist kein isolierter Unit-Test.
+
+Octopart/Nexar-Suche per MPN:
+
+```bash
+NEXAR_CLIENT_ID=... NEXAR_CLIENT_SECRET=... python3 octopart_search.py IRLZ44N
+```
+
+Hinweis: Die Zugangsdaten kommen aus einer Nexar-Anwendung mit Supply-Zugriff. Secrets nie in Git speichern.
 
 App starten:
 
@@ -62,6 +73,8 @@ Hinweis: Das funktioniert nur in einer Umgebung, die das Pythonista-Modul `ui` b
 - `Database.add()` schreibt oder ersetzt Komponenten anhand des Primaerschluessels `mpn`.
 - `Database.find()` sucht per `LIKE` nach Teilstrings der MPN und gibt die erste gefundene Komponente zurueck.
 - `Component` ist ein einfaches Datenobjekt ohne Validierung.
+- `NexarApi.search_mpn()` ruft `supSearchMpn` ueber `https://api.nexar.com/graphql` auf.
+- `NexarApi` holt OAuth2-Tokens ueber `https://identity.nexar.com/connect/token` und cached sie bis kurz vor Ablauf.
 
 ## Bekannte Einschraenkungen
 
@@ -73,6 +86,7 @@ Hinweis: Das funktioniert nur in einer Umgebung, die das Pythonista-Modul `ui` b
   die Daten loeschen, ohne vorherige Zustimmung.
 - Es gibt noch keine automatisierten Tests und keine isolierte Testdatenbank.
 - `database_init.py` schreibt Beispieldaten in die lokale SQLite-Datei.
+- `octopart_search.py` benoetigt Netzwerkzugriff und gueltige `NEXAR_CLIENT_ID` / `NEXAR_CLIENT_SECRET`.
 
 ## Coding-Richtlinien
 
@@ -89,7 +103,7 @@ Hinweis: Das funktioniert nur in einer Umgebung, die das Pythonista-Modul `ui` b
 Mindestens ausfuehren:
 
 ```bash
-python3 -m py_compile main.py ui_main.py database.py component.py camera.py database_init.py database_test.py
+python3 -m py_compile main.py ui_main.py database.py component.py camera.py database_init.py database_test.py nexar_api.py octopart_search.py
 ```
 
 Wenn Datenbankverhalten betroffen ist, zusaetzlich einen gezielten Smoke-Test ausfuehren und klar dokumentieren, ob

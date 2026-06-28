@@ -1,4 +1,5 @@
 import ui
+from component import Component
 from database import Database
 
 
@@ -8,6 +9,7 @@ class MainView(ui.View):
         self.name = 'Bauteil Scanner'
         self.background_color = '#111111'
         self.db = Database()
+        self.db.create()
         self.build()
 
     def build(self):
@@ -58,12 +60,21 @@ class MainView(ui.View):
         btn.action = self.search_part
         self.add_subview(btn)
 
+        add_btn = ui.Button()
+        add_btn.title = "MOSFET anlegen"
+        add_btn.frame = (20, 230, self.width - 40, 45)
+        add_btn.background_color = "#34C759"
+        add_btn.tint_color = "white"
+        add_btn.corner_radius = 10
+        add_btn.action = self.show_add_mosfet
+        self.add_subview(add_btn)
+
         self.result = ui.TextView()
         self.result.editable = False
         self.result.background_color = "#222222"
         self.result.text_color = "white"
         self.result.font = ("Menlo", 18)
-        self.result.frame = (20, 240, self.width - 40, 220)
+        self.result.frame = (20, 295, self.width - 40, 160)
         self.add_subview(self.result)
 
         # Button Kamera
@@ -71,7 +82,7 @@ class MainView(ui.View):
         b = ui.Button()
 
         b.title = "📷 Foto aufnehmen"
-        b.frame = (20, 400, self.width - 40, 55)
+        b.frame = (20, 470, self.width - 40, 55)
         b.corner_radius = 12
         b.background_color = "#007AFF"
         b.tint_color = "white"
@@ -103,6 +114,9 @@ class MainView(ui.View):
     def close_view(self, sender):
         self.close()
 
+    def show_add_mosfet(self, sender):
+        AddMosfetView(self.db).present('sheet')
+
     def search_part(self, sender):
         mpn = self.search.text.strip()
 
@@ -118,3 +132,91 @@ class MainView(ui.View):
             VDS {part.vds} V
             RDS(on) {part.rdson} Ω
             """
+
+
+class AddMosfetView(ui.View):
+
+    def __init__(self, db):
+        self.name = "MOSFET anlegen"
+        self.background_color = "#111111"
+        self.db = db
+        self.build()
+
+    def build(self):
+        title = ui.Label()
+        title.text = "MOSFET anlegen"
+        title.font = ("<System-Bold>", 26)
+        title.text_color = "white"
+        title.alignment = ui.ALIGN_CENTER
+        title.frame = (20, 30, self.width - 40, 40)
+        title.flex = "W"
+        self.add_subview(title)
+
+        self.mpn = self.add_text_field("MPN", 95)
+        self.vds = self.add_text_field("VDS in V", 155)
+        self.rdson = self.add_text_field("RDS(on) in Ohm", 215)
+
+        save_btn = ui.Button()
+        save_btn.title = "Speichern"
+        save_btn.frame = (20, 285, self.width - 40, 48)
+        save_btn.flex = "W"
+        save_btn.background_color = "#34C759"
+        save_btn.tint_color = "white"
+        save_btn.corner_radius = 10
+        save_btn.font = ("<System-Bold>", 18)
+        save_btn.action = self.save
+        self.add_subview(save_btn)
+
+        cancel_btn = ui.Button()
+        cancel_btn.title = "Abbrechen"
+        cancel_btn.frame = (20, 345, self.width - 40, 44)
+        cancel_btn.flex = "W"
+        cancel_btn.tint_color = "white"
+        cancel_btn.action = self.cancel
+        self.add_subview(cancel_btn)
+
+        self.message = ui.Label()
+        self.message.text_color = "white"
+        self.message.alignment = ui.ALIGN_CENTER
+        self.message.number_of_lines = 0
+        self.message.frame = (20, 405, self.width - 40, 70)
+        self.message.flex = "W"
+        self.add_subview(self.message)
+
+    def add_text_field(self, placeholder, y):
+        field = ui.TextField(frame=(20, y, self.width - 40, 42))
+        field.flex = "W"
+        field.placeholder = placeholder
+        field.background_color = "white"
+        field.text_color = "black"
+        field.autocapitalization_type = ui.AUTOCAPITALIZE_NONE
+        self.add_subview(field)
+        return field
+
+    def save(self, sender):
+        mpn = self.mpn.text.strip()
+
+        if not mpn:
+            self.show_error("MPN fehlt.")
+            return
+
+        try:
+            vds = self.parse_float(self.vds.text)
+            rdson = self.parse_float(self.rdson.text)
+        except ValueError:
+            self.show_error("VDS und RDS(on) muessen Zahlen sein.")
+            return
+
+        self.db.add(Component(mpn, vds, rdson))
+        self.message.text_color = "#34C759"
+        self.message.text = "MOSFET gespeichert."
+
+    def cancel(self, sender):
+        self.close()
+
+    def show_error(self, text):
+        self.message.text_color = "#FF453A"
+        self.message.text = text
+
+    def parse_float(self, text):
+        return float(text.strip().replace(",", "."))
