@@ -68,8 +68,10 @@ class Database:
 
         comp = Component(
             row["mpn"],
+            row["manufacturer"],
             row["vds"],
-            row["rdson"]
+            row["rdson"],
+            row["continous_drain_current"]
         )
 
         db.close()
