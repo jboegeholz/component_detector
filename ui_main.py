@@ -46,6 +46,7 @@ class MainView(ui.View):
         self.preview.content_mode = ui.CONTENT_SCALE_ASPECT_FIT
         self.preview.frame = (20, 120, self.width - 40, 250)
         self.preview.flex = 'W'
+        self.preview.hidden = True
 
         self.add_subview(self.preview)
 
@@ -125,6 +126,7 @@ class MainView(ui.View):
 
         self.result.text = "Foto geladen."
         self.preview.image = image_for_preview(image)
+        self.preview.hidden = False
         self.result.text = "OCR startet..."
         ui.delay(lambda: self.run_ocr(image), 0.3)
 
@@ -134,17 +136,24 @@ class MainView(ui.View):
         try:
             text = recognize_text(image)
         except OcrError as error:
+            self.clear_preview()
             self.result.text = "OCR Fehler:\n" + str(error)
             return
 
         mpn = find_mpn(text)
 
         if not mpn:
+            self.clear_preview()
             self.result.text = "Keine MPN erkannt.\n\n" + text
             return
 
         self.search.text = mpn
+        self.clear_preview()
         self.search_part()
+
+    def clear_preview(self):
+        self.preview.image = None
+        self.preview.hidden = True
 
     def close_view(self, sender):
         self.close()
