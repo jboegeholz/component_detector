@@ -123,6 +123,7 @@ class MainView(ui.View):
         if image is None:
             return
 
+        self.result.text = "Foto geladen."
         self.preview.image = image_for_preview(image)
         self.result.text = "OCR laeuft..."
 

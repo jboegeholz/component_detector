@@ -1,5 +1,6 @@
 import photos
 import ui
+import io
 
 
 class Camera:
@@ -15,14 +16,20 @@ def image_for_preview(image):
     if image.__class__.__module__ == "ui":
         return image
 
-    if hasattr(image, "to_png"):
-        return ui.Image.from_data(image.to_png())
-
-    try:
-        import io
-    except ImportError:
+    data = image_to_png_data(image)
+    if data is None:
         return None
+
+    return ui.Image.from_data(data)
+
+
+def image_to_png_data(image):
+    if image is None:
+        return None
+
+    if hasattr(image, "to_png"):
+        return image.to_png()
 
     buffer = io.BytesIO()
     image.save(buffer, format="PNG")
-    return ui.Image.from_data(buffer.getvalue())
+    return buffer.getvalue()

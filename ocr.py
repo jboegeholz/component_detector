@@ -1,6 +1,6 @@
 import re
 import threading
-from ctypes import c_void_p
+from ctypes import c_void_p, create_string_buffer
 
 
 try:
@@ -20,7 +20,7 @@ def recognize_text(image):
     if ObjCClass is None:
         raise OcrError("OCR benoetigt Pythonista auf iOS mit objc_util.")
 
-    ui_image = image_to_ui_image(image)
+    ui_image = image_to_objc_image(image)
     if ui_image is None or ui_image.CGImage() is None:
         raise OcrError("Bild konnte nicht fuer OCR vorbereitet werden.")
 
@@ -55,6 +55,7 @@ def recognize_text(image):
         restype=None,
         argtypes=[c_void_p, c_void_p]
     )
+    state["completion_block"] = completion_block
 
     request = Request.alloc().initWithCompletionHandler_(completion_block)
     request.setRecognitionLevel_(0)
@@ -77,23 +78,35 @@ def recognize_text(image):
     return "\n".join(state["texts"])
 
 
-def image_to_ui_image(image):
+def image_to_objc_image(image):
     if hasattr(image, "CGImage"):
         return image
 
     try:
-        import io
-        from objc_util import ObjCClass
+        if image.__class__.__module__ == "ui":
+            return ObjCInstance(image)
+    except ImportError:
+        pass
+    except TypeError:
+        pass
+
+    try:
+        from camera import image_to_png_data
     except ImportError:
         return None
 
-    buffer = io.BytesIO()
-    image.save(buffer, format="PNG")
+    png_data = image_to_png_data(image)
+    if not png_data:
+        return None
+
+    raw = create_string_buffer(png_data)
 
     NSData = ObjCClass("NSData")
     UIImage = ObjCClass("UIImage")
-    data = NSData.dataWithBytes_length_(buffer.getvalue(), len(buffer.getvalue()))
-    return UIImage.imageWithData_(data)
+    data = NSData.dataWithBytes_length_(raw, len(png_data))
+    ui_image = UIImage.imageWithData_(data)
+    ui_image._python_buffer = raw
+    return ui_image
 
 
 def find_mpn(text):
