@@ -74,6 +74,7 @@ class MainView(ui.View):
         self.result.background_color = "#222222"
         self.result.text_color = "white"
         self.result.font = ("Menlo", 26)
+        self.result.alignment = ui.ALIGN_RIGHT
         self.result.frame = (20, 295, self.width - 40, 180)
         self.add_subview(self.result)
 
