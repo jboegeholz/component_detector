@@ -134,11 +134,11 @@ class MainView(ui.View):
 
             return
 
-        self.result.text = f"""
-            MPN {part.mpn}
-            VDS {part.vds} V
-            RDS(on) {part.rdson} Ω
-            """
+        self.result.text = (
+            f"MPN {part.mpn}\n"
+            f"VDS {part.vds} V\n"
+            f"RDS(on) {part.rdson} Ω"
+        )
 
 
 class AddMosfetView(ui.View):
