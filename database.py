@@ -6,11 +6,16 @@ from component import Component
 class Database:
 
     def __init__(self):
-        self.db = sqlite3.connect("data/bauteile.sqlite")
-        self.db.row_factory = sqlite3.Row
+        self.path = "data/bauteile.sqlite"
+
+    def connect(self):
+        db = sqlite3.connect(self.path)
+        db.row_factory = sqlite3.Row
+        return db
 
     def create(self):
-        c = self.db.cursor()
+        db = self.connect()
+        c = db.cursor()
 
         c.execute("""
         CREATE TABLE IF NOT EXISTS components(
@@ -20,10 +25,12 @@ class Database:
         );
         """)
 
-        self.db.commit()
+        db.commit()
+        db.close()
 
     def add(self, comp):
-        c = self.db.cursor()
+        db = self.connect()
+        c = db.cursor()
 
         c.execute("""
         INSERT OR REPLACE INTO components
@@ -36,11 +43,11 @@ class Database:
 
         ))
 
-        self.db.commit()
+        db.commit()
+        db.close()
 
     def find(self, mpn):
-        db = sqlite3.connect("data/bauteile.sqlite")
-        db.row_factory = sqlite3.Row
+        db = self.connect()
         c = db.cursor()
 
         c.execute("""
@@ -52,10 +59,14 @@ class Database:
         row = c.fetchone()
 
         if row is None:
+            db.close()
             return None
 
-        return Component(
+        comp = Component(
             row["mpn"],
             row["vds"],
             row["rdson"]
         )
+
+        db.close()
+        return comp

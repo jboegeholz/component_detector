@@ -69,8 +69,10 @@ Hinweis: Das funktioniert nur in einer Umgebung, die das Pythonista-Modul `ui` b
 
 ## Architekturhinweise
 
-- `Database.__init__()` verbindet sich relativ zum aktuellen Arbeitsverzeichnis mit `data/bauteile.sqlite`. Befehle
-  sollten deshalb aus dem Repository-Root ausgefuehrt werden.
+- `Database.__init__()` speichert den relativen Pfad `data/bauteile.sqlite`. Befehle sollten deshalb aus dem
+  Repository-Root ausgefuehrt werden.
+- `Database.create()`, `Database.add()` und `Database.find()` oeffnen jeweils eine eigene SQLite-Verbindung, damit
+  Pythonista-Callbacks aus unterschiedlichen Threads keine geteilte Connection verwenden.
 - `Database.create()` legt die Tabelle `components` an, wenn sie fehlt.
 - `Database.add()` schreibt oder ersetzt Komponenten anhand des Primaerschluessels `mpn`.
 - `Database.find()` sucht per `LIKE` nach Teilstrings der MPN und gibt die erste gefundene Komponente zurueck.
