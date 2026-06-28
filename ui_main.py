@@ -73,8 +73,8 @@ class MainView(ui.View):
         self.result.editable = False
         self.result.background_color = "#222222"
         self.result.text_color = "white"
-        self.result.font = ("Menlo", 18)
-        self.result.frame = (20, 295, self.width - 40, 160)
+        self.result.font = ("Menlo", 26)
+        self.result.frame = (20, 295, self.width - 40, 180)
         self.add_subview(self.result)
 
         # Button Kamera
@@ -82,7 +82,7 @@ class MainView(ui.View):
         self.photo_btn = ui.Button()
 
         self.photo_btn.title = "📷 Foto aufnehmen"
-        self.photo_btn.frame = (20, 470, self.width - 40, 55)
+        self.photo_btn.frame = (20, 490, self.width - 40, 55)
         self.photo_btn.corner_radius = 12
         self.photo_btn.background_color = "#007AFF"
         self.photo_btn.tint_color = "white"
@@ -111,8 +111,8 @@ class MainView(ui.View):
         self.search.frame = (20, 120, self.width - 40, 40)
         self.search_btn.frame = (20, 175, self.width - 40, 45)
         self.add_btn.frame = (20, 230, self.width - 40, 45)
-        self.result.frame = (20, 295, self.width - 40, 160)
-        self.photo_btn.frame = (20, 470, self.width - 40, 55)
+        self.result.frame = (20, 295, self.width - 40, 180)
+        self.photo_btn.frame = (20, 490, self.width - 40, 55)
 
     def take_photo(self, sender):
         print("Kamera kommt als Nächstes 😊")
