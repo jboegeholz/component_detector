@@ -39,12 +39,12 @@ def main():
         continous_drain_current=4.5
     ))
     db.add(Component(
-        "IRF9540",
+        "IRF9540N",
         manufacturer="International Rectifier",
         channel_type="p-channel",
         vds=-100,
-        rdson=0.2,
-        continous_drain_current=-19
+        rdson=0.117,
+        continous_drain_current=-23
     ))
     print("Datenbank initialisiert.")
 
