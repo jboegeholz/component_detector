@@ -14,15 +14,15 @@ class MainView(ui.View):
 
     def build(self):
         # Titel
-        title = ui.Label()
-        title.text = 'Bauteil Scanner'
-        title.font = ('<System-Bold>', 30)
-        title.text_color = 'white'
-        title.alignment = ui.ALIGN_CENTER
-        title.frame = (0, 50, self.width, 40)
-        title.flex = 'W'
+        self.title = ui.Label()
+        self.title.text = 'Bauteil Scanner'
+        self.title.font = ('<System-Bold>', 30)
+        self.title.text_color = 'white'
+        self.title.alignment = ui.ALIGN_CENTER
+        self.title.frame = (0, 50, self.width, 40)
+        self.title.flex = 'W'
 
-        self.add_subview(title)
+        self.add_subview(self.title)
         # Schließen-Button
 
         close_btn = ui.Button()
@@ -51,23 +51,23 @@ class MainView(ui.View):
         self.search.placeholder = "MPN eingeben"
         self.add_subview(self.search)
 
-        btn = ui.Button()
-        btn.title = "🔍 Suchen"
-        btn.frame = (20, 175, self.width - 40, 45)
-        btn.background_color = "#007AFF"
-        btn.tint_color = "white"
-        btn.corner_radius = 10
-        btn.action = self.search_part
-        self.add_subview(btn)
+        self.search_btn = ui.Button()
+        self.search_btn.title = "🔍 Suchen"
+        self.search_btn.frame = (20, 175, self.width - 40, 45)
+        self.search_btn.background_color = "#007AFF"
+        self.search_btn.tint_color = "white"
+        self.search_btn.corner_radius = 10
+        self.search_btn.action = self.search_part
+        self.add_subview(self.search_btn)
 
-        add_btn = ui.Button()
-        add_btn.title = "MOSFET anlegen"
-        add_btn.frame = (20, 230, self.width - 40, 45)
-        add_btn.background_color = "#34C759"
-        add_btn.tint_color = "white"
-        add_btn.corner_radius = 10
-        add_btn.action = self.show_add_mosfet
-        self.add_subview(add_btn)
+        self.add_btn = ui.Button()
+        self.add_btn.title = "MOSFET anlegen"
+        self.add_btn.frame = (20, 230, self.width - 40, 45)
+        self.add_btn.background_color = "#34C759"
+        self.add_btn.tint_color = "white"
+        self.add_btn.corner_radius = 10
+        self.add_btn.action = self.show_add_mosfet
+        self.add_subview(self.add_btn)
 
         self.result = ui.TextView()
         self.result.editable = False
@@ -79,19 +79,19 @@ class MainView(ui.View):
 
         # Button Kamera
 
-        b = ui.Button()
+        self.photo_btn = ui.Button()
 
-        b.title = "📷 Foto aufnehmen"
-        b.frame = (20, 470, self.width - 40, 55)
-        b.corner_radius = 12
-        b.background_color = "#007AFF"
-        b.tint_color = "white"
-        b.font = ("<System-Bold>", 20)
-        b.flex = 'W'
+        self.photo_btn.title = "📷 Foto aufnehmen"
+        self.photo_btn.frame = (20, 470, self.width - 40, 55)
+        self.photo_btn.corner_radius = 12
+        self.photo_btn.background_color = "#007AFF"
+        self.photo_btn.tint_color = "white"
+        self.photo_btn.font = ("<System-Bold>", 20)
+        self.photo_btn.flex = 'W'
 
-        b.action = self.take_photo
+        self.photo_btn.action = self.take_photo
 
-        self.add_subview(b)
+        self.add_subview(self.photo_btn)
 
     def layout(self):
         self.preview.frame = (
@@ -107,6 +107,12 @@ class MainView(ui.View):
             35,
             35
         )
+        self.title.frame = (0, 50, self.width, 40)
+        self.search.frame = (20, 120, self.width - 40, 40)
+        self.search_btn.frame = (20, 175, self.width - 40, 45)
+        self.add_btn.frame = (20, 230, self.width - 40, 45)
+        self.result.frame = (20, 295, self.width - 40, 160)
+        self.photo_btn.frame = (20, 470, self.width - 40, 55)
 
     def take_photo(self, sender):
         print("Kamera kommt als Nächstes 😊")
@@ -138,6 +144,7 @@ class AddMosfetView(ui.View):
 
     def __init__(self, db):
         self.name = "MOSFET anlegen"
+        self.frame = (0, 0, 360, 520)
         self.background_color = "#111111"
         self.db = db
         self.build()
