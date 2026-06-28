@@ -116,9 +116,9 @@ class MainView(ui.View):
         self.title.frame = (0, 50, self.width, 40)
         self.search.frame = (20, 120, self.width - 40, 40)
         self.search_btn.frame = (20, 175, self.width - 40, 45)
-        self.add_btn.frame = (20, 230, self.width - 40, 45)
         self.result.frame = (20, 295, self.width - 40, 180)
         self.photo_btn.frame = (20, 490, self.width - 40, 55)
+        self.add_btn.frame = (20, 230, self.width - 40, 45)
 
     def take_photo(self, sender):
         image = Camera().capture()
