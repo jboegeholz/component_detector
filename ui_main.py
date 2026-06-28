@@ -174,11 +174,11 @@ class MainView(ui.View):
             return
 
         self.result.text = (
-            f"MPN {part.mpn}\n"
-            f"Hersteller {part.manufacturer}\n"
-            f"VDS {part.vds} V\n"
-            f"RDS(on) {part.rdson} Ω"
-            f"Dauerstrom {part.continous_drain_current} A"
+            f"MPN: {part.mpn}\n"
+            f"Hersteller: {part.manufacturer}\n"
+            f"VDS: {part.vds} V\n"
+            f"RDS(on): {part.rdson} Ω\n"
+            f"Dauerstrom: {part.continous_drain_current} A"
         )
 
 
