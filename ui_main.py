@@ -125,6 +125,10 @@ class MainView(ui.View):
 
         self.result.text = "Foto geladen."
         self.preview.image = image_for_preview(image)
+        self.result.text = "OCR startet..."
+        ui.delay(lambda: self.run_ocr(image), 0.3)
+
+    def run_ocr(self, image):
         self.result.text = "OCR laeuft..."
 
         try:

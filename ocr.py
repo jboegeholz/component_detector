@@ -1,14 +1,11 @@
 import re
-import threading
-from ctypes import c_void_p, create_string_buffer
+from ctypes import create_string_buffer
 
 
 try:
-    from objc_util import ObjCBlock, ObjCClass, ObjCInstance, ns
+    from objc_util import ObjCClass, ns
 except ImportError:
-    ObjCBlock = None
     ObjCClass = None
-    ObjCInstance = None
     ns = None
 
 
@@ -20,76 +17,36 @@ def recognize_text(image):
     if ObjCClass is None:
         raise OcrError("OCR benoetigt Pythonista auf iOS mit objc_util.")
 
-    ui_image = image_to_objc_image(image)
-    if ui_image is None or ui_image.CGImage() is None:
+    image_data = image_to_nsdata(image)
+    if image_data is None:
         raise OcrError("Bild konnte nicht fuer OCR vorbereitet werden.")
 
     Vision = ObjCClass("VNImageRequestHandler")
     Request = ObjCClass("VNRecognizeTextRequest")
 
-    state = {
-        "done": threading.Event(),
-        "texts": [],
-        "error": None,
-    }
-
-    def completion(request_ptr, error_ptr):
-        try:
-            if error_ptr:
-                state["error"] = str(ObjCInstance(error_ptr))
-                return
-
-            request = ObjCInstance(request_ptr)
-            results = request.results()
-
-            for observation in results:
-                candidates = observation.topCandidates_(1)
-                candidate = candidates.firstObject()
-                if candidate:
-                    state["texts"].append(str(candidate.string()))
-        finally:
-            state["done"].set()
-
-    completion_block = ObjCBlock(
-        completion,
-        restype=None,
-        argtypes=[c_void_p, c_void_p]
-    )
-    state["completion_block"] = completion_block
-
-    request = Request.alloc().initWithCompletionHandler_(completion_block)
+    request = Request.alloc().init()
     request.setRecognitionLevel_(0)
     request.setUsesLanguageCorrection_(False)
 
-    handler = Vision.alloc().initWithCGImage_options_(ui_image.CGImage(), ns({}))
+    handler = Vision.alloc().initWithData_options_(image_data, ns({}))
     success = handler.performRequests_error_(ns([request]), None)
 
     if not success:
         raise OcrError("OCR konnte nicht gestartet werden.")
 
-    state["done"].wait(10)
+    texts = []
+    results = request.results()
 
-    if not state["done"].is_set():
-        raise OcrError("OCR hat zu lange gedauert.")
+    for observation in results:
+        candidates = observation.topCandidates_(1)
+        candidate = candidates.firstObject()
+        if candidate:
+            texts.append(str(candidate.string()))
 
-    if state["error"]:
-        raise OcrError(state["error"])
-
-    return "\n".join(state["texts"])
+    return "\n".join(texts)
 
 
-def image_to_objc_image(image):
-    if hasattr(image, "CGImage"):
-        return image
-
-    try:
-        if image.__class__.__module__ == "ui":
-            return ObjCInstance(image)
-    except ImportError:
-        pass
-    except TypeError:
-        pass
-
+def image_to_nsdata(image):
     try:
         from camera import image_to_png_data
     except ImportError:
@@ -102,11 +59,9 @@ def image_to_objc_image(image):
     raw = create_string_buffer(png_data)
 
     NSData = ObjCClass("NSData")
-    UIImage = ObjCClass("UIImage")
     data = NSData.dataWithBytes_length_(raw, len(png_data))
-    ui_image = UIImage.imageWithData_(data)
-    ui_image._python_buffer = raw
-    return ui_image
+    data._python_buffer = raw
+    return data
 
 
 def find_mpn(text):
