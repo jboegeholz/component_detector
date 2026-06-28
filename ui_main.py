@@ -63,14 +63,7 @@ class MainView(ui.View):
         self.search_btn.action = self.search_part
         self.add_subview(self.search_btn)
 
-        self.add_btn = ui.Button()
-        self.add_btn.title = "MOSFET anlegen"
-        self.add_btn.frame = (20, 230, self.width - 40, 45)
-        self.add_btn.background_color = "#34C759"
-        self.add_btn.tint_color = "white"
-        self.add_btn.corner_radius = 10
-        self.add_btn.action = self.show_add_mosfet
-        self.add_subview(self.add_btn)
+
 
         self.result = ui.TextView()
         self.result.editable = False
@@ -96,6 +89,15 @@ class MainView(ui.View):
         self.photo_btn.action = self.take_photo
 
         self.add_subview(self.photo_btn)
+
+        self.add_btn = ui.Button()
+        self.add_btn.title = "MOSFET anlegen"
+        self.add_btn.frame = (20, 230, self.width - 40, 45)
+        self.add_btn.background_color = "#34C759"
+        self.add_btn.tint_color = "white"
+        self.add_btn.corner_radius = 10
+        self.add_btn.action = self.show_add_mosfet
+        self.add_subview(self.add_btn)
 
     def layout(self):
         self.preview.frame = (
