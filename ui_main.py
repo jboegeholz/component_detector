@@ -144,7 +144,7 @@ class MainView(ui.View):
             return
 
         self.search.text = mpn
-        self.search_part(sender)
+        self.search_part()
 
     def close_view(self, sender):
         self.close()
@@ -152,7 +152,7 @@ class MainView(ui.View):
     def show_add_mosfet(self, sender):
         AddMosfetView(self.db).present('sheet')
 
-    def search_part(self, sender):
+    def search_part(self, sender=None):
         mpn = self.search.text.strip()
 
         part = self.db.find(mpn)
