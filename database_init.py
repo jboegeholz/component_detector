@@ -17,6 +17,12 @@ def main():
         55,
         0.022
     ))
+    db.add(Component(
+        "IRFZ44",
+        60,
+        0.028
+    ))
+
 
     print("Datenbank initialisiert.")
 
